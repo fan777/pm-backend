@@ -19,7 +19,7 @@ A portfolio manager to organize your invesments and determine whether your curre
 ## Objectives
 
 * Establish database, schema, and sample data for a stock portfolio
-* Establish method of delivery of portfolio information via APIs
-* Estbalish acquisition and delivery of stock data from external APIs
+* Establish accessibility of backend portfolio information to frontend
+* Establish API for frontend from external API for detailed stock information
 
 ## Getting Started
