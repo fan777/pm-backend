@@ -1,25 +1,15 @@
 INSERT INTO users(username, password, email)
 VALUES ('cfan',
-        'password',
+        '$2a$04$NiGgd8f2Y1b/EbhUpF1Ca.PvX1PdU.hgF0cO0mYm1t5egkVvUxQjm',
         'test@test.com'),
-        ('test',
-        'password',
+       ('test',
+        '$2a$04$NiGgd8f2Y1b/EbhUpF1Ca.PvX1PdU.hgF0cO0mYm1t5egkVvUxQjm',
         'test1@test.com');
 
 INSERT INTO portfolios (name, cash, notes, username)
-VALUES ('active',
-        1787.95,
-        '',
-        'cfan'),
-      ('stable',
-       10.62,
-       '',
-       'cfan'),
-      ('test',
-       0,
-       'test notes',
-       'test'
-      );
+VALUES ('active',1787.95,'','cfan'),
+       ('stable',10.62,'','cfan'),
+       ('test',0,'test notes','test');
 
 INSERT INTO stocks (symbol, name)
 VALUES ('ALLY','Ally Financial Inc'),
