@@ -16,4 +16,4 @@ CREATE DATABASE pm_test;
 \connect pm_test
 
 \i pm-schema.sql
-\i pm-seed-test.sql
+\i pm-seed.sql

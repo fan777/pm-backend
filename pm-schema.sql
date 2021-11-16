@@ -30,3 +30,11 @@ CREATE TABLE holdings (
   goal TEXT,
   PRIMARY KEY (portfolio_id, symbol)
 );
+
+CREATE TABLE watchlist (
+  id SERIAL PRIMARY KEY,
+  username VARCHAR(25)
+    REFERENCES users ON DELETE CASCADE,
+  symbol VARCHAR(25)
+    REFERENCES stocks ON DELETE CASCADE
+)

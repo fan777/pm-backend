@@ -1,10 +1,10 @@
 INSERT INTO users(username, password, email)
 VALUES ('cfan',
         '$2a$04$NiGgd8f2Y1b/EbhUpF1Ca.PvX1PdU.hgF0cO0mYm1t5egkVvUxQjm',
-        'test@test.com'),
+        'cfan@test.com'),
        ('test',
         '$2a$04$NiGgd8f2Y1b/EbhUpF1Ca.PvX1PdU.hgF0cO0mYm1t5egkVvUxQjm',
-        'test1@test.com');
+        'test@test.com');
 
 INSERT INTO portfolios (name, cash, notes, username)
 VALUES ('active',1787.95,'','cfan'),
@@ -23,7 +23,9 @@ VALUES ('ALLY','Ally Financial Inc'),
        ('VXUS', 'Vanguard Total International Stock Index Fund ETF'),
        ('QQQ', 'Invesco QQQ Trust Series 1'),
        ('AAPL', 'Apple Inc'),
-       ('TSLA', 'Tesla Inc');
+       ('TSLA', 'Tesla Inc'),
+       ('AMD', 'Advanced Micro Devices Inc'),
+       ('NVDA', 'Nvidia Corp');
 
 INSERT INTO holdings (portfolio_id, symbol, shares_owned, cost_basis, target_percentage, goal)
 VALUES (1, 'ALLY', 20, 988.70, 0.1, 'HOLD'),
@@ -39,3 +41,8 @@ VALUES (1, 'ALLY', 20, 988.70, 0.1, 'HOLD'),
        (3, 'QQQ', 10, 1000, 0.50, 'HOLD'),
        (3, 'AAPL', 0, 0, 0.25, 'BUY'),
        (3, 'TSLA', 0, 0, 0.25, 'BUY');
+
+INSERT INTO watchlist (username, symbol)
+VALUES ('cfan','AMD'),
+       ('test', 'AMD'),
+       ('test', 'NVDA');
