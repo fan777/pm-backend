@@ -14,20 +14,27 @@ CREATE TABLE portfolios (
     REFERENCES users ON DELETE CASCADE
 );
 
+CREATE TABLE stocks (
+  symbol VARCHAR(25) PRIMARY KEY,
+  name TEXT NOT NULL
+);
+
 CREATE TABLE holdings (
-  id SERIAL PRIMARY KEY,
-  symbol VARCHAR(25) NOT NULL,
+  portfolio_id INTEGER
+    REFERENCES portfolios ON DELETE CASCADE,
+  symbol VARCHAR(25)
+    REFERENCES stocks ON DELETE CASCADE,
   shares_owned DECIMAL,
   cost_basis DECIMAL,
   target_percentage DECIMAL,
   goal TEXT,
-  portfolio_id INTEGER
-    REFERENCES portfolios ON DELETE CASCADE
+  PRIMARY KEY (portfolio_id, symbol)
 );
 
 CREATE TABLE watchlist (
+  id SERIAL PRIMARY KEY,
   username VARCHAR(25)
     REFERENCES users ON DELETE CASCADE,
-  symbol VARCHAR(25) NOT NULL, 
-  PRIMARY KEY (username, symbol)
+  symbol VARCHAR(25)
+    REFERENCES stocks ON DELETE CASCADE
 )

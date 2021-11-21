@@ -60,9 +60,47 @@ function ensureCorrectUser(req, res, next) {
   }
 }
 
+/** Middleware to use when they must provide a valid token & be user matching
+ *  username provided as query param.
+ *
+ *  If not, raises Unauthorized.
+ */
+
+function ensureCorrectUserQuery(req, res, next) {
+  try {
+    const user = res.locals.user;
+    if (!(user && user.username === req.query.user)) {
+      throw new UnauthorizedError();
+    }
+    return next();
+  } catch (err) {
+    return next(err);
+  }
+}
+
+/** Middleware to use when they must provide a valid token & be user matching
+ *  username provided in body.
+ *
+ *  If not, raises Unauthorized.
+ */
+
+// function ensureCorrectUserBody(req, res, next) {
+//   try {
+//     const user = res.locals.user;
+//     if (!(user && user.username === req.body.username)) {
+//       throw new UnauthorizedError();
+//     }
+//     return next();
+//   } catch (err) {
+//     return next(err);
+//   }
+// }
+
 
 module.exports = {
   authenticateJWT,
   ensureLoggedIn,
   ensureCorrectUser,
+  ensureCorrectUserQuery,
+  // ensureCorrectUserBody,
 };

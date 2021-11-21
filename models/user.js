@@ -182,6 +182,35 @@ class User {
     if (!user) throw new NotFoundError(`No user: ${username}`);
   }
 
+  /** Add stock to watchlist: update db, returns undefined.
+   * 
+   * - username: username watching stock
+   * - symbol: stock symbol
+   */
+
+  static async addToWatchlist(username, symbol) {
+    const preCheck = await db.query(
+      `SELECT username
+       FROM users
+       WHERE username = $1`, [username]);
+    const user = preCheck.rows[0];
+
+    if (!user) throw new NotFoundError(`No username: ${username}`);
+
+    const duplicateCheck = await db.query(
+      `SELECT username, symbol
+       FROM watchlist
+       WHERE username = $1 AND symbol = $2`,
+      [username, symbol]);
+
+    if (duplicateCheck.rows[0]) {
+      throw new BadRequestError(`Symbol ${symbol} already watched by user ${username}`);
+    }
+
+    await db.query(`INSERT INTO watchlist (username, symbol)
+                    VALUES ($1, $2)`,
+      [username, symbol]);
+  }
 }
 
 

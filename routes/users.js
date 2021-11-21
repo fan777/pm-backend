@@ -3,14 +3,12 @@
 /** Routes for users. */
 
 const jsonschema = require("jsonschema");
-
 const express = require("express");
+const router = express.Router();
 const { ensureCorrectUser } = require("../middleware/auth");
 const { BadRequestError } = require("../expressError");
 const User = require("../models/user");
 const userUpdateSchema = require("../schemas/userUpdate.json");
-
-const router = express.Router();
 
 /** GET /[username] => { user }
  *
@@ -66,5 +64,21 @@ router.delete("/:username", ensureCorrectUser, async function (req, res, next) {
     return next(err);
   }
 });
+
+/** POST /[username]/watchlist/[symbol] { state } => { watchlist } 
+ * 
+ * Returns {"watched": symbol}
+ * 
+ * Authorization required: same-user-as:username
+*/
+
+router.post("/:username/watchlist/:symbol", ensureCorrectUser, async function (req, res, next) {
+  try {
+    await User.addToWatchlist(req.params.username, req.params.symbol);
+    return res.json({ watched: req.params.symbol });
+  } catch (err) {
+    return next(err);
+  }
+})
 
 module.exports = router;
