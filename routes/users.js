@@ -12,7 +12,8 @@ const userUpdateSchema = require("../schemas/userUpdate.json");
 
 /** GET /[username] => { user }
  *
- * Returns { username, email, portfolios }
+ * Returns { username, email, watchlist, portfolios }
+ *   where watchlist is [...symbols]
  *   where portfolios is [{ id, name, cash, notes, username, holdings }, ...]
  *   where holdings is [{ id, symbol, shares_owned, cost_basis, target_percentage, goal, portfolio_id }, ...]
  *

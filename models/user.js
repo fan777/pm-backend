@@ -142,12 +142,21 @@ class User {
                   email
            FROM users
            WHERE username = $1`,
-      [username],
-    );
+      [username]);
 
     const user = userRes.rows[0];
 
     if (!user) throw new NotFoundError(`No user: ${username}`);
+
+    const watchlistRes = await db.query(
+      `SELECT symbol
+       FROM watchlist
+       WHERE username = $1`,
+      [username]);
+
+    const watchlist = watchlistRes.rows.map(a => a.symbol);
+
+    user.watchlist = watchlist;
 
     try {
       const portfolioIds = await this.getUserPortfolioIds(username);
