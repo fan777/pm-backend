@@ -5,6 +5,7 @@
 const jwt = require("jsonwebtoken");
 const { SECRET_KEY } = require("../config");
 const { UnauthorizedError } = require("../expressError");
+const User = require("../models/user");
 
 
 /** Middleware: Authenticate user.
@@ -66,12 +67,17 @@ function ensureCorrectUser(req, res, next) {
  *  If not, raises Unauthorized.
  */
 
-function ensureCorrectUserQuery(req, res, next) {
+async function ensureCorrectPortfolio(req, res, next) {
   try {
     const user = res.locals.user;
-    if (!(user && user.username === req.query.user)) {
+    if (!(user && user.username))
+      throw new UnauthorizedError();
+
+    const portfolioIds = await User.getUserPortfolioIds(user.username);
+    if (!(portfolioIds.includes(+req.params.id))) {
       throw new UnauthorizedError();
     }
+
     return next();
   } catch (err) {
     return next(err);
@@ -79,28 +85,32 @@ function ensureCorrectUserQuery(req, res, next) {
 }
 
 /** Middleware to use when they must provide a valid token & be user matching
- *  username provided in body.
+ *  username provided as query param.
  *
  *  If not, raises Unauthorized.
  */
 
-// function ensureCorrectUserBody(req, res, next) {
-//   try {
-//     const user = res.locals.user;
-//     if (!(user && user.username === req.body.username)) {
-//       throw new UnauthorizedError();
-//     }
-//     return next();
-//   } catch (err) {
-//     return next(err);
-//   }
-// }
+async function ensureCorrectHolding(req, res, next) {
+  try {
+    const user = res.locals.user;
+    if (!(user && user.username))
+      throw new UnauthorizedError();
 
+    const holdingIds = await User.getUserHoldingIds(user.username);
+    if (!(holdingIds.includes(+req.params.id))) {
+      throw new UnauthorizedError();
+    }
+
+    return next();
+  } catch (err) {
+    return next(err);
+  }
+}
 
 module.exports = {
   authenticateJWT,
   ensureLoggedIn,
   ensureCorrectUser,
-  ensureCorrectUserQuery,
-  // ensureCorrectUserBody,
+  ensureCorrectPortfolio,
+  ensureCorrectHolding
 };

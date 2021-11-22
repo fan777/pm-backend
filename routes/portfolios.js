@@ -4,7 +4,7 @@
 
 const jsonschema = require("jsonschema");
 const express = require("express");
-const { /*ensureCorrectUser,*/ ensureCorrectUserQuery, /*ensureCorrectUserBody*/ } = require("../middleware/auth");
+const { ensureLoggedIn, ensureCorrectPortfolio } = require("../middleware/auth");
 const { BadRequestError } = require("../expressError");
 const Portfolio = require("../models/portfolio");
 
@@ -15,12 +15,13 @@ const router = new express.Router();
 
 /** GET /[id] => { portfolio }
  * 
- * Returns { id, name, cash, notes, username }
+ * Returns { id, name, cash, notes, username, holdings }
+ *   where where holdings is [{ id, symbol, shares_owned, cost_basis, target_percentage, goal, portfolio_id }, ...]
  * 
- * Authorization required: same user-as-:username
+ * Authorization required: user must own portfolio
 */
 
-router.get("/:id", ensureCorrectUserQuery, async function (req, res, next) {
+router.get("/:id", ensureCorrectPortfolio, async function (req, res, next) {
   try {
     const portfolio = await Portfolio.get(req.params.id);
     return res.json({ portfolio });
@@ -35,10 +36,10 @@ router.get("/:id", ensureCorrectUserQuery, async function (req, res, next) {
  * 
  * Returns { id, name, cash, notes, username }
  * 
- * Authoriation required: same user-as-:username
+ * Authorization required: logged in user
 */
 
-router.post("/", ensureCorrectUserQuery, async function (req, res, next) {
+router.post("/", ensureLoggedIn, async function (req, res, next) {
   try {
     const validator = jsonschema.validate(req.body, portfolioNewSchema);
     if (!validator.valid) {
@@ -61,10 +62,10 @@ router.post("/", ensureCorrectUserQuery, async function (req, res, next) {
  *
  * Returns { id, name, cash, notes, username }
  *
- * Authorization required: same user-as-:username
+ * Authorization required: user must own portfolio
  */
 
-router.patch("/:id", ensureCorrectUserQuery, async function (req, res, next) {
+router.patch("/:id", ensureCorrectPortfolio, async function (req, res, next) {
   try {
     const validator = jsonschema.validate(req.body, portfolioUpdateSchema);
     if (!validator.valid) {
@@ -81,10 +82,10 @@ router.patch("/:id", ensureCorrectUserQuery, async function (req, res, next) {
 
 /** DELETE /[id]  =>  { deleted: id }
  *
- * Authorization: same user-as-:username
+ * Authorization: user must own portfolio
  */
 
-router.delete("/:id", ensureCorrectUserQuery, async function (req, res, next) {
+router.delete("/:id", ensureCorrectPortfolio, async function (req, res, next) {
   try {
     await Portfolio.remove(req.params.id);
     return res.json({ deleted: +req.params.id });

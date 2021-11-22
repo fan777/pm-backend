@@ -46,7 +46,7 @@ class Portfolio {
   /** Given a portfolio id, return data about portfolio
    * 
    * Returns { id, name, cash, notes, username, holdings }
-   *   where holdings is [{id, symbol, shares_owned, cost_basis, target_percentage, goal}, ...]
+   *   where holdings is [{ id, symbol, shares_owned, cost_basis, target_percentage, goal, portfolio_id }, ...]
    * 
    * Throws NotFoundError if not found.
    */
@@ -129,7 +129,6 @@ class Portfolio {
 
     if (!portfolio) throw new NotFoundError(`No portfolio: ${id}`);
   }
-
 }
 
 module.exports = Portfolio;

@@ -8,6 +8,7 @@ const {
   BadRequestError,
   UnauthorizedError,
 } = require("../expressError");
+const Portfolio = require("./portfolio");
 
 const { BCRYPT_WORK_FACTOR } = require("../config.js");
 
@@ -126,6 +127,38 @@ class User {
     return user;
   }
 
+  /** Given a username, return all data about user.
+   *
+   * Returns { username, email, portfolios }
+   *   where portfolios is [{ id, name, cash, notes, username, holdings }, ...]
+   *   where holdings is [{ id, symbol, shares_owned, cost_basis, target_percentage, goal, portfolio_id }, ...]
+   *
+   * Throws NotFoundError if user not found.
+   **/
+
+  static async getComplete(username) {
+    const userRes = await db.query(
+      `SELECT username,
+                  email
+           FROM users
+           WHERE username = $1`,
+      [username],
+    );
+
+    const user = userRes.rows[0];
+
+    if (!user) throw new NotFoundError(`No user: ${username}`);
+
+    try {
+      const portfolioIds = await this.getUserPortfolioIds(username);
+      user.portfolios = await Promise.all(portfolioIds.map(async (id) => Portfolio.get(id)));
+    } catch (err) {
+      throw new BadRequestError(err);
+    }
+
+    return user;
+  }
+
   /** Update user data with `data`.
    *
    * This is a "partial update" --- it's fine if data doesn't contain
@@ -211,7 +244,38 @@ class User {
                     VALUES ($1, $2)`,
       [username, symbol]);
   }
-}
 
+  /** Given username, return portfolio ids
+   * 
+   * Returns [...portfolioIds]
+   */
+
+  static async getUserPortfolioIds(username) {
+    const result = await db.query(
+      `SELECT id
+       FROM portfolios
+       WHERE username = $1`,
+      [username]);
+    const portfolioIds = result.rows.map(a => a.id);
+    return portfolioIds;
+  }
+
+  /** Given username, return holding ids
+   *
+   * Returns [...holdingIds]
+   */
+
+  static async getUserHoldingIds(username) {
+    const result = await db.query(
+      `SELECT a.id 
+       FROM holdings a
+       JOIN portfolios b
+       ON a.portfolio_id = b.id
+       WHERE b.username = $1`,
+      [username]);
+    const holdingIds = result.rows.map(a => a.id);
+    return holdingIds;
+  }
+}
 
 module.exports = User;

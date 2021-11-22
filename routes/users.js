@@ -12,14 +12,17 @@ const userUpdateSchema = require("../schemas/userUpdate.json");
 
 /** GET /[username] => { user }
  *
- * Returns { username, email }
+ * Returns { username, email, portfolios }
+ *   where portfolios is [{ id, name, cash, notes, username, holdings }, ...]
+ *   where holdings is [{ id, symbol, shares_owned, cost_basis, target_percentage, goal, portfolio_id }, ...]
  *
  * Authorization required: same user-as-:username
  **/
 
 router.get("/:username", ensureCorrectUser, async function (req, res, next) {
   try {
-    const user = await User.get(req.params.username);
+    // const user = await User.get(req.params.username);
+    const user = await User.getComplete(req.params.username);
     return res.json({ user });
   } catch (err) {
     return next(err);

@@ -11,6 +11,7 @@ const { authenticateJWT } = require("./middleware/auth");
 const authRoutes = require("./routes/auth");
 const usersRoutes = require("./routes/users");
 const portfoliosRoutes = require("./routes/portfolios");
+const holdingsRoutes = require("./routes/holdings");
 const yhfRoutes = require("./ext_routes/yahooFinance");
 
 const morgan = require("morgan");
@@ -25,6 +26,7 @@ app.use(authenticateJWT);
 app.use("/auth", authRoutes);
 app.use("/users", usersRoutes);
 app.use("/portfolios", portfoliosRoutes);
+app.use("/holdings", holdingsRoutes);
 app.use("/yhf", yhfRoutes);
 
 /** Handle 404 errors -- this matches everything */
