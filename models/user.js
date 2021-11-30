@@ -264,6 +264,36 @@ class User {
       [username, symbol]);
   }
 
+  /** Remove stock from watchlist: update db, returns undefined.
+   * 
+   * - username: username watching stock
+   * - symbol: stock symbol
+   */
+
+  static async removeFromWatchlist(username, symbol) {
+    const preCheck = await db.query(
+      `SELECT username
+       FROM users
+       WHERE username = $1`, [username]);
+    const user = preCheck.rows[0];
+
+    if (!user) throw new NotFoundError(`No username: ${username}`);
+
+    const duplicateCheck = await db.query(
+      `SELECT username, symbol
+       FROM watchlist
+       WHERE username = $1 AND symbol = $2`,
+      [username, symbol]);
+
+    if (duplicateCheck.rows.length < 1) {
+      throw new BadRequestError(`Symbol ${symbol} not watched by user ${username}`);
+    }
+
+    await db.query(`DELETE FROM watchlist
+                    WHERE username = $1 AND symbol = $2`,
+      [username, symbol]);
+  }
+
   /** Given username, return portfolio ids
    * 
    * Returns [...portfolioIds]

@@ -101,4 +101,20 @@ router.post("/:username/watchlist/:symbol", ensureCorrectUser, async function (r
   }
 })
 
+/** DELETE /[username]/watchlist/[symbol] { state } => { watchlist } 
+ * 
+ * Returns {"unwatched": symbol}
+ * 
+ * Authorization required: same-user-as:username
+*/
+
+router.delete("/:username/watchlist/:symbol", ensureCorrectUser, async function (req, res, next) {
+  try {
+    await User.removeFromWatchlist(req.params.username, req.params.symbol);
+    return res.json({ unwatched: req.params.symbol });
+  } catch (err) {
+    return next(err);
+  }
+})
+
 module.exports = router;

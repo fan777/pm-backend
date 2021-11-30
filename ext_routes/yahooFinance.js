@@ -87,6 +87,16 @@ router.get('/recommend', async function (req, res, next) {
   }
 })
 
-// get historical for a symbols
+/** Historical data */
+
+router.get('/historical', async function (req, res, next) {
+  try {
+    const { term: query, start: period1, end: period2, interval } = req.query;
+    const results = await yahooFinance.historical(query, { period1, period2, interval });
+    return res.json(results);
+  } catch (err) {
+    return next(err);
+  }
+})
 
 module.exports = router;
