@@ -5,9 +5,9 @@ const express = require("express");
 const router = new express.Router();
 const yahooFinance = require('yahoo-finance2').default;
 
-/** Get quotes */
+/** Get basic quotes */
 
-// post version of basic quote (can pass array)
+// post basic quote (uses post to pass array in body)
 router.post('/quote', async function (req, res, next) {
   try {
     const symbols = Array.isArray(req.body.symbols) ? req.body.symbols : [req.body.symbols];
@@ -18,10 +18,10 @@ router.post('/quote', async function (req, res, next) {
   }
 })
 
-// get version of basic quote
+// get basic quote (uses get and query)
+// https://www.w3schools.com/tags/ref_urlencode.ASP <-- reference when testing queries
 // router.get('/quote', async function (req, res, next) {
 //   try {
-//     // https://www.w3schools.com/tags/ref_urlencode.ASP <-- reference when testing queries
 //     const symbols = decodeURI(req.query.symbol).split(",");
 //     const quotes = await yahooFinance.quote(symbols);
 //     return res.json({ quotes })
@@ -32,7 +32,7 @@ router.post('/quote', async function (req, res, next) {
 
 /** Get detailed quotes */
 
-// post version of detailed quote (can pass array)
+// get detailed quote (uses post to pass array in body)
 router.post('/quote-summary', async function (req, res, next) {
   try {
     const symbol = Array.isArray(req.body.symbol) ? req.body.symbol : [req.body.symbol];
@@ -43,7 +43,7 @@ router.post('/quote-summary', async function (req, res, next) {
   }
 })
 
-// get version of detailed quote
+// get detailed quote (uses get and query)
 // router.get('/quote-summary', async function (req, res, next) {
 //   try {
 //     const quote = await yahooFinance.quoteSummary(req.query.symbol);
