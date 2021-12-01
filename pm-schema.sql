@@ -8,7 +8,7 @@ CREATE TABLE users (
 CREATE TABLE portfolios (
   id SERIAL PRIMARY KEY,
   name TEXT NOT NULL,
-  cash DECIMAL(10,2) DEFAULT '0.00' NOT NULL,
+  cash NUMERIC(22,2)  DEFAULT '0.00' NOT NULL,
   notes TEXT,
   username VARCHAR(25) 
     REFERENCES users ON DELETE CASCADE
@@ -18,7 +18,7 @@ CREATE TABLE holdings (
   id SERIAL PRIMARY KEY,
   symbol VARCHAR(25) NOT NULL,
   shares_owned DECIMAL,
-  cost_basis DECIMAL,
+  cost_basis NUMERIC(22,2) ,
   target_percentage DECIMAL,
   goal TEXT,
   portfolio_id INTEGER

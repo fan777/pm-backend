@@ -73,7 +73,7 @@ router.patch("/:id", ensureCorrectPortfolio, async function (req, res, next) {
       throw new BadRequestError(errs);
     }
 
-    const portfolio = await Portfolio.update(req.params.id, req.body);
+    const portfolio = await Portfolio.update(req.params.id, req.body, res.locals.user.username);
     return res.json({ portfolio });
   } catch (err) {
     return next(err);

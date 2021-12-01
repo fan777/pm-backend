@@ -91,7 +91,20 @@ class Portfolio {
    * Throws NotFoundError if not found.
    */
 
-  static async update(id, data) {
+  static async update(id, data, username) {
+    console.log(data);
+    console.log(username);
+    if (data.name) {
+      const duplicateCheck = await db.query(
+        `SELECT name
+       FROM portfolios
+       WHERE name = $1 AND username = $2`,
+        [data.name, username]);
+
+      if (duplicateCheck.rows[0])
+        throw new BadRequestError(`Duplicate name: ${data.name}`);
+    }
+
     const { setCols, values } = sqlForPartialUpdate(
       data,
       {});
